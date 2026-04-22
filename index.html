@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Hermanos - Assistência Técnica Especializada</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body>
+
+<!-- MENU HAMBURGUER -->
+<div class="menu-hamburguer" onclick="toggleMenu(event)">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+
+
+
+<header class="hero">
+    <img class="losHermanos" src="img/H.png" alt="Los Hermanos Logo">
+
+    <div class="TextoHead"> 
+        <h1>Soluções Especializadas em Computadores</h1>
+        <p>Performance, segurança e cuidado técnico para sua máquina.</p>
+
+        <!-- ICONES -->
+        <div class="icons-hero">
+
+            <!-- INSTAGRAM CORRETO -->
+            <a href="https://www.instagram.com/los.hermanostec/" target="_blank" class="icon-box">
+                <span class="tooltip">Instagram</span>
+                <i data-feather="instagram"></i>
+            </a>
+
+            <!-- EMAIL → GOOGLE FORMS -->
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeg0w9kTUHCCUheAEzvO7YGmrGv_GnotMX86dF80Sgfeuu2pA/viewform" target="_blank" class="icon-box">
+                <span class="tooltip">Acessar Docs</span>
+                <i data-feather="mail"></i>
+            </a>
+
+        </div>
+
+        <button class="btn-whatsapp" onclick="abrirModal()">
+            Solicitar Orçamento
+        </button>
+    </div>
+</header>
+
+<section class="servicos">
+    <h2>Serviços Prestados</h2>
+
+    <div class="grid-servicos">
+        <div class="item">
+            <h3>Formatação</h3>
+            <p>Configuração completa, reinstalação e otimização para máximo desempenho.</p>
+        </div>
+
+        <div class="item">
+            <h3>Limpeza Técnica</h3>
+            <p>Prevenção contra superaquecimento e aumento da vida útil dos componentes.</p>
+        </div>
+
+        <div class="item">
+            <h3>Sistemas Operacionais</h3>
+            <p>Instalação e configuração de Windows e Linux com drivers atualizados.</p>
+        </div>
+
+        <div class="item">
+            <h3>Montagem de Computadores.</h3>
+            <p>Montagem personalizada com organização de cabos e teste de stress.</p>
+        </div>
+
+        <div class="item">
+            <h3>Ativação Windows e Office</h3>
+            <p>Ativação do Windows e pacote Office presencialmente ou via acesso remoto.</p>
+        </div>
+
+        <div class="item">
+            <h3>Diagnóstico Completo</h3>
+            <p>Verificação da integridade dos dispositivos para evitar falhas e identificar problemas.</p>
+        </div>
+
+        <div class="item">
+            <h3>Scripts Personalizados</h3>
+            <p>Automação e otimização do sistema com scripts feitos sob medida.</p>
+        </div>
+    </div>
+</section>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+
+        <h2>Escolha os serviços</h2>
+
+        <div class="opcoes">
+            <label class="opcao"><input type="checkbox" value="Formatação"><span>Formatação</span></label>
+            <label class="opcao"><input type="checkbox" value="Limpeza Técnica"><span>Limpeza Técnica</span></label>
+            <label class="opcao"><input type="checkbox" value="Montagem de Computadores"><span>Montagem de Computadores</span></label>
+            <label class="opcao"><input type="checkbox" value="Ativação Windows e Office"><span>Ativação Windows e Office</span></label>
+            <label class="opcao"><input type="checkbox" value="Diagnóstico Completo"><span>Diagnóstico Completo</span></label>
+            <label class="opcao"><input type="checkbox" value="Scripts Personalizados"><span>Scripts Personalizados</span></label>
+        </div>
+
+        <button class="btn-whatsapp" onclick="enviarWhats()">Entrar em Contato</button>
+        <button class="fechar" onclick="fecharModal()">Fechar</button>
+
+    </div>
+</div>
+
+<script>
+function toggleMenu(e) {
+    e.stopPropagation();
+    document.getElementById("menu-lateral").classList.toggle("ativo");
+}
+
+document.addEventListener("click", function(e) {
+    const menu = document.getElementById("menu-lateral");
+    const btn = document.querySelector(".menu-hamburguer");
+
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.classList.remove("ativo");
+    }
+});
+
+function abrirModal() {
+    document.getElementById("modal").style.display = "flex";
+}
+
+function fecharModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
+function enviarWhats() {
+    let selecionados = [];
+
+    document.querySelectorAll('input[type="checkbox"]:checked').forEach(el => {
+        selecionados.push(el.value);
+    });
+
+    let mensagem = "Olá, tenho interesse em: " + selecionados.join(", ");
+    let numero = "558586419415";
+
+    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`, "_blank");
+}
+
+feather.replace();
+</script>
+
+</body>
+
+<script>
+feather.replace();
+</script>
+</html>
