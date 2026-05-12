@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Los Hermanos</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --font-base: 18px;
+            --radius-padrao: 15px;
+            --amarelo-config: #b45309;
+            --verde-home: #064e3b;
+            --cor-sucesso: #10b981;
+            --cor-erro: #ef4444;
+        }
+
+        body.painel-body {
+            background-color: #0a0f1a;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--font-base);
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+        }
+
+        /* SIDEBAR DESKTOP */
+        .sidebar-admin {
+            width: 280px;
+            background-color: #111827;
+            height: 100vh;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-sizing: border-box;
+            border-right: 1px solid #1f2937;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-logo img { width: 85px; display: block; margin: 0 auto; }
+        .sidebar-info { text-align: center; margin-bottom: 25px; }
+        .sidebar-info h2 { font-size: 1.4rem; margin: 10px 0 0 0; }
+        .sidebar-info p { color: var(--amarelo-config); font-weight: bold; margin: 5px 0; }
+
+        .stats-sidebar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .stat-card {
+            background: #1f2937;
+            padding: 15px;
+            border-radius: var(--radius-padrao);
+            border-left: 5px solid #374151;
+        }
+        .stat-card span { font-size: 0.8rem; color: #9ca3af; font-weight: bold; }
+        .stat-card strong { font-size: 1.6rem; display: block; margin-top: 5px; }
+
+        .sidebar-nav-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+        
+        .nav-btn {
+            display: flex; align-items: center; justify-content: flex-start;
+            gap: 15px; padding: 14px 20px; border-radius: var(--radius-padrao);
+            border: none; cursor: pointer; font-weight: 600; font-size: 1.1rem;
+            color: white; transition: 0.3s;
+        }
+        .btn-pagina-inicial { background-color: var(--verde-home); }
+        .btn-configuracoes { background-color: var(--amarelo-config); }
+        .btn-sair { background-color: #991b1b; }
+
+        /* CONTEÚDO */
+        .conteudo-admin { 
+            margin-left: 280px; 
+            padding: 40px; 
+            width: 100%; 
+            box-sizing: border-box;
+        }
+        
+        .card-servico {
+            background: #1f2937; border-radius: var(--radius-padrao);
+            padding: 25px; margin-bottom: 20px; border: 1px solid #374151;
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+        .status { font-size: 1rem !important; font-weight: 800 !important; padding: 6px 12px; border-radius: 8px; }
+        .status-pronto { background-color: #10b981; }
+        .status-manutencao { background-color: #f59e0b; color: #000; }
+        .status-pecas { background-color: #ef4444; }
+
+        /* TOAST MODERNO */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 15000; display: flex; flex-direction: column; gap: 10px; }
+        .custom-toast {
+            min-width: 250px; padding: 16px 20px; border-radius: 12px;
+            background: #1f2937; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: flex; align-items: center; gap: 12px; border-left: 6px solid #334155; animation: slideIn 0.3s ease;
+        }
+
+        /* AJUSTES PARA CELULAR (RESPONSIVIDADE) */
+        @media (max-width: 768px) {
+            body.painel-body { flex-direction: column; }
+
+            .sidebar-admin {
+                width: 100%;
+                height: auto;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid #1f2937;
+                padding: 15px;
+            }
+
+            .stats-sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .stat-card { min-width: 120px; flex: 1; }
+
+            .sidebar-nav-bottom {
+                flex-direction: row;
+                justify-content: space-around;
+                margin-top: 15px;
+            }
+
+            .nav-btn span { display: none; } /* Esconde texto dos botões no mobile para caber */
+            .nav-btn { padding: 10px; }
+
+            .conteudo-admin {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .topo-admin {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .card-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .card-header h3 { max-width: 100%; font-size: 1.3rem; }
+
+            .modal-content { padding: 20px; width: 95%; }
+        }
+
+        /* MODAIS */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); align-items: center;
+            justify-content: center; z-index: 10000; padding: 20px;
+        }
+        .modal-content {
+            background: #1f2937; padding: 35px; border-radius: 20px;
+            width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto;
+        }
+        input, select, textarea {
+            width: 100%; background: #0f172a; border: 1px solid #334155;
+            color: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-sizing: border-box;
+        }
+        .btn-acao-modal {
+            background: #059669; color: white; border: none; padding: 15px;
+            border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body class="painel-body">
+
+    <div id="toast-container"></div>
+
+    <aside class="sidebar-admin">
+        <div class="sidebar-logo"><img src="img/H.png" alt="Logo"></div>
+        <div class="sidebar-info">
+            <h2>Los Hermanos</h2>
+            <p>Painel Admin</p>
+        </div>
+
+        <div class="stats-sidebar">
+            <div class="stat-card" style="border-left-color: #f59e0b;">
+                <span>MANUTENÇÃO</span>
+                <strong id="count-manutencao">0</strong>
+            </div>
+            <div class="stat-card" style="border-left-color: #ef4444;">
+                <span>PEÇAS</span>
+                <strong id="count-pecas">0</strong>
+            </div>
+            <div class="stat-card" style="border-left-color: #10b981;">
+                <span>CONCLUÍDOS</span>
+                <strong id="count-concluidos">0</strong>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav-bottom">
+            <button class="nav-btn btn-pagina-inicial" title="Página Inicial" onclick="carregarServicos()">
+                <i data-feather="home"></i> <span>Página Inicial</span>
+            </button>
+            <button class="nav-btn btn-configuracoes" title="Configurações" onclick="notificar('Configurações em breve!', 'aviso')">
+                <i data-feather="settings"></i> <span>Configurações</span>
+            </button>
+            <button class="nav-btn btn-sair" title="Sair" onclick="logout()">
+                <i data-feather="log-out"></i> <span>Sair</span>
+            </button>
+        </nav>
+    </aside>
+
+    <main class="conteudo-admin">
+        <header class="topo-admin" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div>
+                <h1 style="font-size: 2.8rem; margin:0;">Serviços a Fazer</h1>
+                <p style="color:#9ca3af; font-size: 1.2rem;">Assistência Técnica Especializada</p>
+            </div>
+            <button class="nav-btn" style="background:#059669; justify-content: center;" onclick="abrirModal()">
+                <i data-feather="plus"></i> <span>Novo Atendimento</span>
+            </button>
+        </header>
+        <section class="cards-servicos" id="listaServicos"></section>
+    </main>
+
+    <div class="modal-overlay" id="modalServico">
+        <div class="modal-content">
+            <h2 id="modalTitulo" style="margin-top:0;">Novo Atendimento</h2>
+            <input type="text" id="nomeCliente" placeholder="Nome do Cliente (Máx 50)" maxlength="50">
+            <input type="text" id="numeroCliente" placeholder="WhatsApp (Máx 9)" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <input type="text" id="cpfCliente" placeholder="CPF (Máx 11)" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <select id="modeloProduto">
+                <option value="">Selecione o Produto</option>
+                <option>Notebook</option><option>Notebook Gamer</option><option>PC / Desktop</option><option>All-in-One</option>
+            </select>
+            <textarea id="defeitoProduto" placeholder="Defeito apresentado" rows="3"></textarea>
+            <select id="statusServico">
+                <option value="Em análise">Em análise</option><option value="Aguardando peça">Aguardando peça</option><option value="Em manutenção">Em manutenção</option><option value="Pronto">Pronto</option>
+            </select>
+            <p>Técnico Responsável:</p>
+            <div style="display:flex; gap:10px; margin-bottom: 25px;">
+                <button class="nav-btn tecnico-item" style="background:#374151; flex:1; justify-content: center;" onclick="selecionarTecnico(this)">Rodrigo</button>
+                <button class="nav-btn tecnico-item" style="background:#374151; flex:1; justify-content: center;" onclick="selecionarTecnico(this)">Andrey</button>
+                <button class="nav-btn tecnico-item" style="background:#374151; flex:1; justify-content: center;" onclick="selecionarTecnico(this)">Nathan</button>
+            </div>
+            <button class="btn-acao-modal" id="salvarBtn" onclick="salvarServico()">Salvar Atendimento</button>
+            <button class="btn-acao-modal" style="background:#374151; margin-top:10px;" onclick="fecharModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalVer">
+        <div class="modal-content" id="conteudoVer" style="border-left: 8px solid #059669;"></div>
+    </div>
+
+    <div class="modal-overlay" id="modalConfirmarExcluir">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <i data-feather="alert-triangle" style="width: 50px; height: 50px; color: var(--cor-erro); margin-bottom: 15px;"></i>
+            <h2 style="margin-top:0;">Tem certeza?</h2>
+            <p style="color: #9ca3af; margin-bottom: 25px;">Deseja apagar este atendimento?</p>
+            <button class="btn-acao-modal" style="background: var(--cor-erro);" id="btnConfirmarExcluir">Sim, Apagar</button>
+            <button class="btn-acao-modal" style="background:#374151; margin-top:10px;" onclick="fecharModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        // Use as credenciais do seu Supabase aqui
+        const SUPABASE_URL = "https://imrnpvzioukgcbdwkqio.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imltcm5wdnppb3VrZ2NiZHdrcWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MTE1NTUsImV4cCI6MjA5NDA4NzU1NX0.ivYscIos9AjN53ovHfXS8WB2WVgC9fVYZliLeoPcBhw"; 
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let editandoId = null;
+        let idParaExcluir = null;
+        let tecnicoSelecionado = "";
+
+        function notificar(msg, tipo = 'sucesso') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${tipo}`;
+            let icone = tipo === 'sucesso' ? 'check-circle' : (tipo === 'erro' ? 'x-circle' : 'alert-circle');
+            toast.innerHTML = `<i data-feather="${icone}"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            feather.replace();
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        function fecharModal() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+
+        async function carregarServicos() {
+            const { data, error } = await db.from("servicos").select("*").order("id", { ascending: false });
+            if (error) return;
+            const lista = document.getElementById("listaServicos");
+            lista.innerHTML = "";
+            let m=0, p=0, c=0;
+            data.forEach(s => {
+                if(s.status === 'Em manutenção') m++;
+                if(s.status === 'Aguardando peça') p++;
+                if(s.status === 'Pronto') c++;
+                
+                const card = document.createElement("div");
+                card.className = "card-servico";
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3 title="${s.nome_cliente}">${s.nome_cliente}</h3>
+                        <div class="status ${getStatusClass(s.status)}">${s.status}</div>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 1rem; color: #e5e7eb;">
+                        <p><strong>Modelo:</strong> ${s.modelo_produto || 'Não informado'}</p>
+                        <p><strong>Técnico:</strong> ${s.tecnico || 'Pendente'}</p>
+                        <p><strong>Problema:</strong> ${s.defeito_produto ? s.defeito_produto.substring(0, 50) + '...' : 'Não informado'}</p>
+                    </div>
+                    <div style="display:flex; gap:12px; margin-top:20px;">
+                        <button class="nav-btn" style="padding:10px; background:#374151; justify-content: center;" onclick='verDetalhes(${JSON.stringify(s)})'><i data-feather="eye"></i></button>
+                        <button class="nav-btn" style="padding:10px; background:#374151; justify-content: center;" onclick='abrirEdicao(${JSON.stringify(s)})'><i data-feather="edit-2"></i></button>
+                        <button class="nav-btn" style="padding:10px; background:#7f1d1d; justify-content: center;" onclick="abrirConfirmacaoExcluir(${s.id})"><i data-feather="trash-2"></i></button>
+                    </div>`;
+                lista.appendChild(card);
+            });
+            document.getElementById('count-manutencao').innerText = m;
+            document.getElementById('count-pecas').innerText = p;
+            document.getElementById('count-concluidos').innerText = c;
+            feather.replace();
+        }
+
+        function verDetalhes(s) {
+            const m = document.getElementById('modalVer');
+            const c = document.getElementById('conteudoVer');
+            c.innerHTML = `
+                <h2 style="color:#10b981; margin-top:0;">Detalhes do Atendimento</h2>
+                <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
+                <p><strong>Cliente:</strong> ${s.nome_cliente}</p>
+                <p><strong>WhatsApp:</strong> ${s.numero_cliente || '—'}</p>
+                <p><strong>CPF:</strong> ${s.cpf_cliente || '—'}</p>
+                <p><strong>Produto:</strong> ${s.modelo_produto}</p>
+                <p><strong>Defeito:</strong> ${s.defeito_produto}</p>
+                <p><strong>Status:</strong> ${s.status}</p>
+                <p><strong>Técnico:</strong> ${s.tecnico || 'Não definido'}</p>
+                <button onclick="fecharModal()" class="btn-acao-modal" style="margin-top:20px;">Fechar</button>
+            `;
+            m.style.display = "flex";
+        }
+
+        async function salvarServico() {
+            const btn = document.getElementById('salvarBtn');
+            const nome = document.getElementById('nomeCliente').value.trim();
+            const produto = document.getElementById('modeloProduto').value;
+            if (!nome || !produto) { notificar("Preencha Nome e Produto!", "aviso"); return; }
+            
+            const dados = {
+                nome_cliente: nome,
+                numero_cliente: document.getElementById('numeroCliente').value.trim(),
+                cpf_cliente: document.getElementById('cpfCliente').value.trim(),
+                modelo_produto: produto,
+                defeito_produto: document.getElementById('defeitoProduto').value.trim(),
+                status: document.getElementById('statusServico').value,
+                tecnico: tecnicoSelecionado
+            };
+            btn.disabled = true; btn.innerText = "Salvando...";
+            let error;
+            if (editandoId) ({ error } = await db.from("servicos").update(dados).eq("id", editandoId));
+            else ({ error } = await db.from("servicos").insert([dados]));
+
+            if (!error) {
+                notificar(editandoId ? "Atualizado!" : "Criado!", "sucesso");
+                fecharModal();
+                carregarServicos();
+            } else notificar("Erro ao salvar", "erro");
+            btn.disabled = false; btn.innerText = "Salvar Atendimento";
+        }
+
+        function abrirConfirmacaoExcluir(id) { idParaExcluir = id; document.getElementById('modalConfirmarExcluir').style.display = 'flex'; feather.replace(); }
+        document.getElementById('btnConfirmarExcluir').onclick = async function() {
+            await db.from("servicos").delete().eq("id", idParaExcluir);
+            notificar("Removido!", "sucesso"); fecharModal(); carregarServicos();
+        };
+
+        function abrirEdicao(s) {
+            editandoId = s.id;
+            document.getElementById('modalTitulo').innerText = "Editar Atendimento";
+            document.getElementById('nomeCliente').value = s.nome_cliente;
+            document.getElementById('numeroCliente').value = s.numero_cliente || '';
+            document.getElementById('cpfCliente').value = s.cpf_cliente || '';
+            document.getElementById('modeloProduto').value = s.modelo_produto || '';
+            document.getElementById('defeitoProduto').value = s.defeito_produto || '';
+            document.getElementById('statusServico').value = s.status;
+            document.getElementById('modalServico').style.display = "flex";
+        }
+
+        function abrirModal() { editandoId = null; limparCampos(); document.getElementById('modalServico').style.display = "flex"; }
+        function selecionarTecnico(btn) { document.querySelectorAll(".tecnico-item").forEach(b => b.style.background = "#374151"); btn.style.background = "#059669"; tecnicoSelecionado = btn.innerText; }
+        function getStatusClass(status) { if (status === "Pronto") return "status-pronto"; if (status === "Em manutenção") return "status-manutencao"; return "status-pecas"; }
+        function limparCampos() { document.querySelectorAll('input, textarea, select').forEach(i => i.value = ""); editandoId = null; }
+        function logout() { localStorage.removeItem("logado"); window.location.href = "index.html"; }
+
+        feather.replace();
+        carregarServicos();
+    </script>
+</body>
+</html>

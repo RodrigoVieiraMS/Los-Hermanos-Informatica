@@ -1,129 +1,383 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Los Hermanos - Assistência Técnica Especializada</title>
-    
-      <link rel="stylesheet" href="style.css"> 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/feather-icons"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Los Hermanos - Assistência Técnica Especializada</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/feather-icons"></script>
 </head>
 
 <body>
 
+<!-- MENU HAMBURGUER -->
+<div class="menu-hamburguer" onclick="toggleMenu(event)">
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+
+<!-- MENU -->
+<div id="menu-lateral" class="menu-lateral">
+    <a href="#" onclick="abrirLogin()">Login Admin</a>
+</div>
+
+<!-- HERO -->
 <header class="hero">
-    <img class="losHermanos" src="img/H.png" alt="Los Hermanos Logo">
+
+    <img class="losHermanos" src="img/H.png" alt="Logo">
 
     <div class="TextoHead"> 
+
         <h1>Soluções Especializadas em Computadores</h1>
-        <p>Performance, segurança e cuidado técnico para sua máquina.</p>
+
+        <p>
+            Performance, segurança e cuidado técnico para sua máquina.
+        </p>
 
         <div class="icons-hero">
+
             <a href="https://www.instagram.com/los.hermanostec/" target="_blank" class="icon-box">
+
                 <span class="tooltip">Instagram</span>
+
                 <i data-feather="instagram"></i>
+
             </a>
 
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeg0w9kTUHCCUheAEzvO7YGmrGv_GnotMX86dF80Sgfeuu2pA/viewform" target="_blank" class="icon-box">
-                <span class="tooltip">Acessar Docs</span>
+            <a href="https://forms.gle/Nw6A58Gs4FKgAGYP7" class="icon-box">
+
+                <span class="tooltip">Docs</span>
+
                 <i data-feather="mail"></i>
+
             </a>
+
         </div>
 
         <button class="btn-whatsapp" onclick="abrirModal()">
             Solicitar Orçamento
         </button>
+
     </div>
+
 </header>
 
+<!-- SERVIÇOS -->
 <section class="servicos">
+
     <h2>Serviços Prestados</h2>
 
     <div class="grid-servicos">
-        <div class="item"><h3>Formatação</h3><p>Configuração completa, reinstalação e otimização para máximo desempenho.</p></div>
-        <div class="item"><h3>Limpeza Técnica</h3><p>Prevenção contra superaquecimento e aumento da vida útil dos componentes.</p></div>
-        <div class="item"><h3>Sistemas Operacionais</h3><p>Instalação e configuração de Windows e Linux com drivers atualizados.</p></div>
-        <div class="item"><h3>Montagem de Computadores.</h3><p>Montagem personalizada com organização de cabos e teste de stress.</p></div>
-        <div class="item"><h3>Ativação Windows e Office</h3><p>Ativação do Windows e pacote Office presencialmente ou via acesso remoto.</p></div>
-        <div class="item"><h3>Diagnóstico Completo</h3><p>Verificação da integridade dos dispositivos para evitar falhas e identificar problemas.</p></div>
-        <div class="item"><h3>Scripts Personalizados</h3><p>Automação e otimização do sistema com scripts feitos sob medida.</p></div>
+
+        <div class="item">
+            <h3>Formatação</h3>
+            <p>Configuração completa, reinstalação e otimização para máximo desempenho.</p>
+        </div>
+
+        <div class="item">
+            <h3>Limpeza Técnica</h3>
+            <p>Prevenção contra superaquecimento e aumento da vida útil dos componentes.</p>
+        </div>
+
+        <div class="item">
+            <h3>Sistemas Operacionais</h3>
+            <p>Instalação e configuração de Windows e Linux com drivers atualizados.</p>
+        </div>
+
+        <div class="item">
+            <h3>Montagem</h3>
+            <p>Montagem personalizada com organização de cabos e teste de stress.</p>
+        </div>
+
+        <div class="item">
+            <h3>Ativação</h3>
+            <p>Ativação do Windows e pacote Office presencialmente ou via acesso remoto.</p>
+        </div>
+
+        <div class="item">
+            <h3>Diagnóstico</h3>
+            <p>Verificação da integridade dos dispositivos para evitar falhas e identificar problemas.</p>
+        </div>
+
+        <div class="item">
+            <h3>Scripts</h3>
+            <p>Automação e otimização do sistema com scripts feitos sob medida.</p>
+        </div>
+
     </div>
+
 </section>
 
-<!-- MODAL -->
+<!-- MODAL ORÇAMENTO -->
 <div id="modal" class="modal">
+
     <div class="modal-content">
 
         <h2>Solicitar Orçamento</h2>
 
-        <input type="text" id="nome" placeholder="Nome Completo" maxlength="40">
+        <input
+            type="text"
+            id="nome"
+            placeholder="Nome Completo"
+            maxlength="50"
+        >
 
-        <!-- TELEFONE JUNTO -->
-        <input type="text" id="telefone" placeholder="Número para contato" maxlength="11" inputmode="numeric"  pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        <input
+            type="text"
+            id="telefone"
+            placeholder="Número (DDD + número)"
+            maxlength="11"
+            inputmode="numeric"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+        >
 
         <p id="erro" class="erro"></p>
 
-        <h3 style="color:white; margin-top:15px;">Serviços:</h3>
+        <h3 style="color:white;">
+            Serviços:
+        </h3>
 
         <div class="opcoes">
-            <label class="opcao"><input type="checkbox" value="Formatação"><span>Formatação</span></label>
-            <label class="opcao"><input type="checkbox" value="Limpeza Técnica"><span>Limpeza Técnica</span></label>
-            <label class="opcao"><input type="checkbox" value="Montagem de Computadores"><span>Montagem de Computadores</span></label>
-            <label class="opcao"><input type="checkbox" value="Ativação Windows e Office"><span>Ativação Windows e Office</span></label>
-            <label class="opcao"><input type="checkbox" value="Diagnóstico Completo"><span>Diagnóstico Completo</span></label>
-            <label class="opcao"><input type="checkbox" value="Scripts Personalizados"><span>Scripts Personalizados</span></label>
+
+            <label class="opcao">
+                <input type="checkbox" value="Formatação">
+                <span>Formatação</span>
+            </label>
+
+            <label class="opcao">
+                <input type="checkbox" value="Limpeza Técnica">
+                <span>Limpeza Técnica</span>
+            </label>
+
+            <label class="opcao">
+                <input type="checkbox" value="Montagem">
+                <span>Montagem</span>
+            </label>
+
+            <label class="opcao">
+                <input type="checkbox" value="Ativação">
+                <span>Ativação</span>
+            </label>
+
+            <label class="opcao">
+                <input type="checkbox" value="Diagnóstico">
+                <span>Diagnóstico</span>
+            </label>
+
+            <label class="opcao">
+                <input type="checkbox" value="Scripts">
+                <span>Scripts</span>
+            </label>
+
         </div>
 
-        <button class="btn-whatsapp" onclick="enviarWhats()">Enviar</button>
-        <button class="fechar" onclick="fecharModal()">Fechar</button>
+        <button class="btn-whatsapp" onclick="enviarWhats()">
+            Enviar
+        </button>
+
+        <button class="fechar" onclick="fecharModal()">
+            Fechar
+        </button>
 
     </div>
+
 </div>
 
+<!-- LOGIN ADMIN -->
+<div id="loginModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>Login Administrativo</h2>
+
+        <input
+            type="text"
+            id="loginUser"
+            placeholder="Usuário"
+        >
+
+        <input
+            type="password"
+            id="loginSenha"
+            placeholder="Senha"
+        >
+
+        <p id="erroLogin" class="erro"></p>
+
+        <button class="btn-whatsapp" onclick="fazerLogin()">
+            Entrar
+        </button>
+
+        <button class="fechar" onclick="fecharLogin()">
+            Fechar
+        </button>
+
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
 <script>
+
+const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbwoKPuqXK2Djayu1-rfGK_U2J1Ed92vv73ci8s5BWG7IXe_r88zsjjMl_rBf_6_5Q2clw/exec";
+
+/* MODAL */
 function abrirModal() {
+
     document.getElementById("modal").style.display = "flex";
+
 }
 
 function fecharModal() {
+
     document.getElementById("modal").style.display = "none";
+
 }
 
+/* LOGIN */
+function abrirLogin() {
+
+    document.getElementById("loginModal").style.display = "flex";
+
+}
+
+function fecharLogin() {
+
+    document.getElementById("loginModal").style.display = "none";
+
+}
+
+function fazerLogin() {
+
+    let user = document.getElementById("loginUser").value;
+
+    let senha = document.getElementById("loginSenha").value;
+
+    let erro = document.getElementById("erroLogin");
+
+    erro.textContent = "";
+
+    if(user === "teste" && senha === "123") {
+
+        window.location.href = "./painel.html";
+
+    } else {
+
+        erro.textContent = "Usuário ou senha inválidos";
+
+    }
+
+}
+
+/* GOOGLE SHEETS */
+function salvarNoSheets(cliente, defeito) {
+
+    const params = new URLSearchParams();
+
+    params.append('cliente', cliente);
+
+    params.append('defeito', defeito);
+
+    fetch(URL_SCRIPT, {
+
+        method: "POST",
+
+        mode: "no-cors",
+
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+
+        body: params.toString()
+
+    });
+
+}
+
+/* WHATS */
 function enviarWhats() {
+
     let nome = document.getElementById("nome").value.trim();
+
     let telefone = document.getElementById("telefone").value.trim();
+
     let erro = document.getElementById("erro");
 
     erro.textContent = "";
 
     if (!nome || !telefone) {
+
         erro.textContent = "Preencha nome e telefone!";
+
         return;
+
     }
 
     if (telefone.length < 10) {
+
         erro.textContent = "Número inválido!";
+
         return;
+
     }
 
-    let selecionados = [];
-    document.querySelectorAll('input[type="checkbox"]:checked').forEach(el => {
-        selecionados.push(el.value);
-    });
+    let selecionados = Array.from(
+        document.querySelectorAll('input[type="checkbox"]:checked')
+    ).map(el => el.value);
 
-    let mensagem = `Olá, me chamo: ${nome} meu número é: (${telefone.slice(0,2)}) ${telefone.slice(2)} e gostaria dos seguintes serviços:`;
+    let servicosTexto = selecionados.join(", ");
 
-    if (selecionados.length > 0) {
-        mensagem += " " + selecionados.join(", ");
-    }
+    salvarNoSheets(nome, servicosTexto);
 
-    let numero = "558586419415";
+    let mensagem =
+`Olá, me chamo: ${nome}
+Meu número é: (${telefone.slice(0,2)}) ${telefone.slice(2)}
+Gostaria dos serviços: ${servicosTexto}`;
 
-    window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`, "_blank");
+    window.open(
+`https://wa.me/558586419415?text=${encodeURIComponent(mensagem)}`,
+"_blank"
+    );
+
 }
 
+/* MENU */
+function toggleMenu(e) {
+
+    e.stopPropagation();
+
+    document.getElementById("menu-lateral")
+    .classList.toggle("ativo");
+
+}
+
+document.addEventListener("click", function(e) {
+
+    const menu = document.getElementById("menu-lateral");
+
+    const btn = document.querySelector(".menu-hamburguer");
+
+    if (
+        menu &&
+        !menu.contains(e.target) &&
+        btn &&
+        !btn.contains(e.target)
+    ) {
+
+        menu.classList.remove("ativo");
+
+    }
+
+});
+
+/* FEATHER */
 feather.replace();
+
 </script>
 
 </body>

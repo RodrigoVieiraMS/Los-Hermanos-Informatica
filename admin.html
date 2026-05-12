@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Painel Admin - Los Hermanos</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/feather-icons"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+</head>
+
+<body class="admin-body">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <div class="logo-admin">
+        <h2>Los Hermanos</h2>
+        <p>Painel Administrativo</p>
+    </div>
+
+    <div class="sidebar-menu">
+
+        <button class="menu-btn ativo">
+            <i data-feather="clipboard"></i>
+            Serviços
+        </button>
+
+        <button class="menu-btn">
+            <i data-feather="users"></i>
+            Técnicos
+        </button>
+
+        <button class="menu-btn">
+            <i data-feather="settings"></i>
+            Configurações
+        </button>
+
+    </div>
+
+</div>
+
+<!-- CONTEÚDO -->
+
+<div class="admin-main">
+
+    <!-- TOPO -->
+
+    <div class="topbar">
+
+        <div>
+            <h1>Serviços a Fazer</h1>
+            <p>Controle completo de atendimentos</p>
+        </div>
+
+        <div class="topbar-right">
+
+            <button class="btn-add" onclick="abrirModal()">
+                <i data-feather="plus"></i>
+            </button>
+
+            <button class="btn-logout" onclick="logout()">
+                Sair
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- LISTA -->
+
+    <div id="listaServicos" class="lista-servicos">
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+
+<div id="modalServico" class="modal">
+
+    <div class="modal-admin">
+
+        <div class="modal-header">
+
+            <h2>Novo Atendimento</h2>
+
+            
+
+            <button class="close-modal" onclick="fecharModal()">
+                ✕
+            </button>
+
+        </div>
+
+        <div class="form-grid">
+
+            <input type="text" id="nomeCliente" placeholder="Nome do Cliente">
+
+            <input type="text" id="numeroCliente" placeholder="Número do Cliente">
+
+            <input type="text" id="cpfCliente" placeholder="CPF do Cliente">
+
+            <select id="modeloProduto">
+
+                <option value="">Modelo do Produto</option>
+
+                <option>Notebook</option>
+                <option>Notebook Gamer</option>
+                <option>PC</option>
+                <option>PC Gamer</option>
+                <option>All In One</option>
+
+            </select>
+
+            <textarea id="defeitoProduto" placeholder="Defeito apresentado"></textarea>
+
+            <textarea id="reparoAnterior" placeholder="Algum técnico já realizou limpeza ou reparo?"></textarea>
+
+        </div>
+
+        <!-- TÉCNICOS -->
+
+        <div class="tecnicos-box">
+
+            <h3>Atribuir Técnico</h3>
+
+            <div class="tecnicos-list">
+
+                <button class="tecnico-btn" onclick="selecionarTecnico(this)">
+                    Rodrigo
+                </button>
+
+                <button class="tecnico-btn" onclick="selecionarTecnico(this)">
+                    Andrey
+                </button>
+
+                <button class="tecnico-btn" onclick="selecionarTecnico(this)">
+                    Nathan
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- FOTOS -->
+
+        <div class="upload-box">
+
+            <label>Fotos do Produto</label>
+
+            <input type="file" id="fotoProduto" multiple accept="image/*">
+
+            <div id="previewFotos" class="preview-fotos"></div>
+
+        </div>
+
+        <!-- COMPROVANTE -->
+
+        <div class="upload-box">
+
+            <label>Comprovante de Pagamento</label>
+
+            <input type="file" id="comprovantePagamento">
+
+        </div>
+
+        <!-- BOTÕES -->
+
+        <div class="acoes-modal">
+
+            <button class="btn-cancelar" onclick="fecharModal()">
+                Cancelar
+            </button>
+
+            <button class="btn-salvar" onclick="salvarServico()">
+                Salvar Atendimento
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* ====================================================== */
+/* ====================== LOGIN ========================= */
+/* ====================================================== */
+
+if(localStorage.getItem("logado") !== "true"){
+
+    window.location.href = "index.html";
+}
+
+/* ====================================================== */
+/* ==================== SUPABASE ======================== */
+/* ====================================================== */
+
+const SUPABASE_URL = "COLE_SUA_URL_AQUI";
+
+const SUPABASE_KEY = "COLE_SUA_ANON_KEY_AQUI";
+
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+/* ====================================================== */
+/* ====================== MODAL ========================= */
+/* ====================================================== */
+
+function abrirModal(){
+
+    document.getElementById("modalServico").style.display = "flex";
+}
+
+function fecharModal(){
+
+    document.getElementById("modalServico").style.display = "none";
+}
+
+/* ====================================================== */
+/* ==================== TÉCNICOS ======================== */
+/* ====================================================== */
+
+let tecnicoSelecionado = "";
+
+function selecionarTecnico(botao){
+
+    document.querySelectorAll(".tecnico-btn").forEach(btn => {
+
+        btn.classList.remove("ativo");
+    });
+
+    botao.classList.add("ativo");
+
+    tecnicoSelecionado = botao.innerText;
+}
+
+/* ====================================================== */
+/* ==================== PREVIEW IMG ===================== */
+/* ====================================================== */
+
+document.getElementById("fotoProduto").addEventListener("change", function(e){
+
+    const preview = document.getElementById("previewFotos");
+
+    preview.innerHTML = "";
+
+    Array.from(e.target.files).forEach(file => {
+
+        const reader = new FileReader();
+
+        reader.onload = function(event){
+
+            const img = document.createElement("img");
+
+            img.src = event.target.result;
+
+            preview.appendChild(img);
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+});
+
+/* ====================================================== */
+/* ================= SALVAR SERVIÇO ===================== */
+/* ====================================================== */
+
+async function salvarServico(){
+
+    const nome = document.getElementById("nomeCliente").value;
+
+    const numero = document.getElementById("numeroCliente").value;
+
+    const cpf = document.getElementById("cpfCliente").value;
+
+    const modelo = document.getElementById("modeloProduto").value;
+
+    const defeito = document.getElementById("defeitoProduto").value;
+
+    const reparo = document.getElementById("reparoAnterior").value;
+
+    if(!nome || !numero){
+
+        alert("Preencha os campos obrigatórios.");
+
+        return;
+    }
+
+    const { error } = await supabaseClient
+    .from("servicos")
+    .insert([
+        {
+            nome_cliente: nome,
+            numero_cliente: numero,
+            cpf_cliente: cpf,
+            modelo_produto: modelo,
+            defeito_produto: defeito,
+            reparo_anterior: reparo,
+            tecnico: tecnicoSelecionado,
+            status: "Aguardando"
+        }
+    ]);
+
+    if(error){
+
+        console.log(error);
+
+        alert("Erro ao salvar.");
+
+        return;
+    }
+
+    fecharModal();
+
+    carregarServicos();
+}
+
+/* ====================================================== */
+/* ================= LISTAR SERVIÇOS ==================== */
+/* ====================================================== */
+
+async function carregarServicos(){
+
+    const lista = document.getElementById("listaServicos");
+
+    lista.innerHTML = "";
+
+    const { data, error } = await supabaseClient
+    .from("servicos")
+    .select("*")
+    .order("id", { ascending: false });
+
+    if(error){
+
+        console.log(error);
+
+        return;
+    }
+
+    data.forEach(servico => {
+
+        lista.innerHTML += `
+
+            <div class="card-servico">
+
+                <div class="card-top">
+
+                    <div>
+
+                        <h3>${servico.nome_cliente}</h3>
+
+                        <p>${servico.modelo_produto || ""}</p>
+
+                    </div>
+
+                    <span class="status-servico">
+                        ${servico.status}
+                    </span>
+
+                </div>
+
+                <div class="card-content">
+
+                    <p>
+                        <strong>Número:</strong>
+                        ${servico.numero_cliente}
+                    </p>
+
+                    <p>
+                        <strong>CPF:</strong>
+                        ${servico.cpf_cliente}
+                    </p>
+
+                    <p>
+                        <strong>Defeito:</strong>
+                        ${servico.defeito_produto}
+                    </p>
+
+                    <p>
+                        <strong>Reparo anterior:</strong>
+                        ${servico.reparo_anterior}
+                    </p>
+
+                    <p>
+                        <strong>Técnico:</strong>
+                        ${servico.tecnico || "Não atribuído"}
+                    </p>
+
+                </div>
+
+                <div class="card-actions">
+
+                    <button class="btn-edit">
+                        <i data-feather="edit"></i>
+                    </button>
+
+                    <button class="btn-delete" onclick="excluirServico(${servico.id})">
+                        <i data-feather="trash"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+    feather.replace();
+}
+
+/* ====================================================== */
+/* =================== EXCLUIR ========================== */
+/* ====================================================== */
+
+async function excluirServico(id){
+
+    const confirmar = confirm("Deseja excluir?");
+
+    if(!confirmar) return;
+
+    await supabaseClient
+    .from("servicos")
+    .delete()
+    .eq("id", id);
+
+    carregarServicos();
+}
+
+/* ====================================================== */
+/* ==================== LOGOUT ========================== */
+/* ====================================================== */
+
+function logout(){
+
+    localStorage.removeItem("logado");
+
+    window.location.href = "index.html";
+}
+
+/* ====================================================== */
+/* ===================== START ========================== */
+/* ====================================================== */
+
+carregarServicos();
+
+feather.replace();
+
+</script>
+
+</body>
+</html>
