@@ -3,7 +3,7 @@ function login() {
     let email = document.getElementById("email").value;
     let senha = document.getElementById("senha").value;
 
-    if(email === "lhermanos301@gmail.com" && senha === "loshermanos11@") {
+    if(email === "sapeca" && senha === "colorau") {
 
         localStorage.setItem("auth", "admin");
 
