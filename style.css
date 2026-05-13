@@ -1076,3 +1076,126 @@ body { font-size: 16px; }
         padding: 20px !important;
     }
 }
+
+/* CALCULADORA MODAL */
+.calc-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 11000;
+    align-items: center;
+    justify-content: center;
+}
+
+.calc-content {
+    background: #111827;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 20px;
+    border: 1px solid #374151;
+    position: relative;
+    padding: 30px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.btn-fechar-calc {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #1f2937;
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-fechar-calc:hover {
+    background: #ef4444;
+}
+
+.calc-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #9ca3af;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.resultado-calc {
+    background: #0a0f1a;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+    border: 1px dashed #374151;
+}
+
+.val-llp {
+    color: #10b981;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+/* Grade de Fotos - 3 por linha */
+.anexos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.preview-container {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #374151;
+}
+
+.preview-anexo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.preview-anexo:hover { transform: scale(1.1); }
+
+/* Modal de Zoom (Lightbox) */
+#modalZoom {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 20000;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+}
+
+#modalZoom img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* Destaque do Cofrinho na Calculadora */
+.card-cofrinho {
+    background: #1e1b4b;
+    border: 1px solid #4338ca;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
