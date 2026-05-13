@@ -221,16 +221,16 @@
     <div class="modal-overlay" id="modalServico">
         <div class="modal-content">
             <h2 id="modalTitulo" style="margin-top:0;">Novo Atendimento</h2>
-            <input type="text" id="nomeCliente" placeholder="Nome do Cliente (Máx 50)" maxlength="50">
-            <input type="text" id="numeroCliente" placeholder="WhatsApp (Máx 9)" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-            <input type="text" id="cpfCliente" placeholder="CPF (Máx 11)" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <input type="text" id="nomeCliente" placeholder="Nome do Cliente " maxlength="50">
+            <input type="text" id="numeroCliente" placeholder="Numero do Cliente" maxlength="9" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <input type="text" id="cpfCliente" placeholder="CPF do cliente" maxlength="11" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
             <select id="modeloProduto">
                 <option value="">Selecione o Produto</option>
-                <option>Notebook</option><option>Notebook Gamer</option><option>PC / Desktop</option><option>All-in-One</option>
+                <option>Notebook</option><option>Notebook Gamer</option><option>PC / Desktop</option><option>Pc Gamer</option><option>All-in-One</option>
             </select>
             <textarea id="defeitoProduto" placeholder="Defeito apresentado" rows="3"></textarea>
             <select id="statusServico">
-                <option value="Em análise">Em análise</option><option value="Aguardando peça">Aguardando peça</option><option value="Em manutenção">Em manutenção</option><option value="Pronto">Pronto</option>
+                <option value="Em análise">Em análise</option><option value="Aguardando peça">Aguardando Peça</option><option value="Em manutenção">Em manutenção</option><option value="Pronto">Pronto</option>
             </select>
             <p>Técnico Responsável:</p>
             <div style="display:flex; gap:10px; margin-bottom: 25px;">
